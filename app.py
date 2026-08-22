@@ -166,7 +166,8 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
     
     with st.form(key="battle_form", clear_on_submit=True):
         player_answer = st.text_input("請在此輸入英文答案 (不分大小寫)：").strip().lower()
-        submit_btn = st.form_submit_with_button("🔴 投擲精靈球！")
+        submit_btn = st.form_submit_button("🔴 投擲精靈球！") # ✅ 正確的語法（拿掉 with）
+
         
         if submit_btn:
             if st.session_state.inventory[chosen_ball] <= 0:
