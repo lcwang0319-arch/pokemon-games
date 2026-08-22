@@ -298,30 +298,47 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
                 st.session_state.inventory[chosen_ball] -= 1
                 
                 if player_answer == word_en.lower():
-                    st.success(f"🎉 答對了！順利捕捉到【{pkm_data['name_zh']}】！")
-                    st.balloons()
+                    # ==========================================================
+                    # 🎉 捕捉成功視窗通知
+                    # ==========================================================
+                    st.success(f"🎉 捕捉成功！您完美拼對了單字【{word_en}】！")
+                    st.balloons() # 噴發慶祝氣球
+                    
+                    # 更新圖鑑狀態
                     st.session_state.player_pokedex[battle["pkm_id"]] = "已收服"
                     
+                    # 判斷是首領戰還是野外探索，跳出額外獎勵視窗
                     if battle["mode"] == "boss":
                         st.session_state.defeated_bosses.add(battle["stage_id"])
-                        st.success("🏆 成功擊敗關主！該區域自由探索功能已解除鎖定！")
+                        st.success(f"🏆 【擊敗火箭隊幹部】成功解放該區域！獲得首領戰補給：精靈球 +3、傷藥 +1！")
                         st.session_state.inventory["精靈球"] += 3
                         st.session_state.inventory["傷藥"] += 1
+                    else:
+                        st.info(f"🎯 【圖鑑登錄】野生的【{pkm_data['name_zh']}】已被成功收服，左側屬性面板已解鎖！")
                     
+                    # 清空戰鬥狀態，強制網頁重新整理刷新
                     st.session_state.current_battle = None
                     st.rerun()
                 else:
+                    # ==========================================================
+                    # ❌ 捕捉失敗 / 寶可夢反擊與逃跑視窗通知
+                    # ==========================================================
                     damage = int(battle["level"] * 0.5)
                     st.session_state.player_hp -= damage
                     
+                    # 💀 情況 A：玩家體力不支眼前一片漆黑
                     if st.session_state.player_hp <= 0:
                         st.session_state.player_hp = 30
                         st.session_state.inventory["精靈球"] = max(0, st.session_state.inventory["精靈球"] - 2)
-                        st.session_state.game_over_triggered = True
+                        st.session_state.game_over_triggered = True # 觸發大螢幕死亡重置彈窗
                         st.session_state.current_battle = None
                         st.rerun()
+                    # 🏃 情況 B：玩家受傷，且寶可夢逃跑了
                     else:
-                        st.error(f"❌ 答錯了！正確答案是 **{word_en}**。遭受反擊，扣除生命值 {damage} 點！")
+                        st.error(f"❌ 捕捉失敗！正確答案其實是【{word_en}】。")
+                        st.error(f"💥 【{pkm_data['name_zh']}】發動了反擊！您受到了 {damage} 點傷害。")
+                        st.warning(f"💨 野生的【{pkm_data['name_zh']}】趁亂逃跑了！請重新進入地圖區域尋找。")
+                        
                         st.session_state.current_battle = None
                         st.rerun()
 
@@ -378,3 +395,4 @@ elif not st.session_state.game_over_triggered:
     if 13 in st.session_state.defeated_bosses:
         st.markdown("---")
         st.success("👑 恭喜完全通關！您已擊敗終極 Boss 板木老大，解救了暗黑超夢！現在可以繼續回頭自由捕捉，補完您左側側邊欄的完整圖鑑與屬性數值！")
+     
