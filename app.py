@@ -312,7 +312,11 @@ elif not st.session_state.game_over_triggered:
                     st.rerun()
             else:
                 if st.button("💥 挑戰關主", key=f"boss_{sid}"):
+                    start_battle(sid, mode="boss")
+                    st.rerun()
 
+    # 👑 最終完全通關大彩蛋 (當擊敗第 13 關板木老大時觸發)
     if 13 in st.session_state.defeated_bosses:
         st.markdown("---")
         st.success("👑 恭喜完全通關！您已擊敗終極 Boss 板木老大，解救了暗黑超夢！現在可以繼續回頭自由捕捉，補完您左側側邊欄的完整圖鑑與屬性數值！")
+
