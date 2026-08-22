@@ -79,18 +79,58 @@ if "initialized" not in st.session_state:
     st.session_state.current_battle = None
     st.session_state.game_over_triggered = False
     
+    # 🆕 新增：儲存目前玩家選擇的單字組別 (預設為第 1 組)
+    st.session_state.selected_word_group = 1
+    
     st.session_state.player_pokedex = {}
     for pid in POKEMON_DATABASE.keys():
         st.session_state.player_pokedex[pid] = "未發現"
 
 # ==============================================================================
-# 3. 遊戲核心邏輯函式
+# 3. 🆕 自動生成 2000 個單字庫邏輯 (每組 50 個，共 40 組)
+# ==============================================================================
+@st.cache_data
+def generate_mega_word_bank():
+    """模擬生成 2000 個單字的資料庫 (50個一組，共40組)"""
+    mega_bank = {}
+    
+    # 這裡放一些核心種子單字，後面用數字後綴自動延伸成 2000 個，
+    # 實際開發時您可以把這裡替換成您自己的 2000 字清單
+    base_words = [
+        {"en": "apple", "zh": "蘋果"}, {"en": "banana", "zh": "香蕉"}, {"en": "cat", "zh": "貓"},
+        {"en": "dog", "zh": "狗"}, {"en": "elephant", "zh": "大象"}, {"en": "forest", "zh": "森林"},
+        {"en": "guitar", "zh": "吉他"}, {"en": "history", "zh": "歷史"}, {"en": "internet", "zh": "網路"},
+        {"en": "journey", "zh": "旅程"}, {"en": "kingdom", "zh": "王國"}, {"en": "language", "zh": "語言"},
+        {"en": "strategy", "zh": "策略"}, {"en": "challenge", "zh": "挑戰"}, {"en": "victory", "zh": "勝利"}
+    ]
+    
+    word_id = 1
+    for group_num in range(1, 41): # 1 ~ 40 組
+        group_list = []
+        for word_index in range(1, 51): # 每組 50 個
+            seed = base_words[(word_id - 1) % len(base_words)]
+            # 生成格式如：apple-1 (蘋果-1)
+            group_list.append({
+                "en": f"{seed['en']}-{word_id}",
+                "zh": f"{seed['zh']}-{word_id}"
+            })
+            word_id += 1
+        mega_bank[group_num] = group_list
+        
+    return mega_bank
+
+# 生成並取得全局單字庫
+MEGA_WORD_BANK = generate_mega_word_bank()
+
+# ==============================================================================
+# 4. 遊戲核心邏輯函式
 # ==============================================================================
 def start_battle(stage_id, mode="boss"):
-    word = random.choice(WORD_BANK)
-    stage_info = STAGES[stage_id]
+    # 🆕 核心更動：根據玩家在選單選擇的組別，從對應的 50 個單字中隨機抽一題
+    current_group_words = MEGA_WORD_BANK[st.session_state.selected_word_group]
+    word = random.choice(current_group_words)
     
-    # ✅ 核心更動：若是自由探索模式(explore)，會從各關卡專屬的pool池中「隨機抽不同的野外怪」
+    stage_info = STAGES[stage_id]
     pkm_id = stage_info["boss_pkm"] if mode == "boss" else random.choice(stage_info["pool"])
     
     if st.session_state.player_pokedex[pkm_id] == "未發現":
@@ -107,7 +147,7 @@ def start_battle(stage_id, mode="boss"):
     }
 
 # ==============================================================================
-# 4. 前端介面佈局 (Streamlit UI)
+# 5. 前端介面佈局 (Streamlit UI)
 # ==============================================================================
 st.title("🎒 寶可夢單字冒險：火箭隊的反擊")
 st.caption("本程式採用單一檔案設計，內嵌所有數據庫，完美支援 GitHub 零設定直接部署。")
@@ -151,24 +191,21 @@ with st.sidebar:
         elif status == "已遭遇":
             st.write(f"🟡 **#{pid} ？？？** (已遭遇未捕捉)")
         else:
-            st.write(f"⚪ **#{pid} ？？？** (未發現)")
+            st.write(f"⚪ **#{pid} ？？過** (未發現)")
 
-# ==============================================================================
-# 5. 主畫面：戰鬥與對決區域 (處理答題、精靈球提示與扣血邏輯)
-# ==============================================================================
+# 主畫面：戰鬥與對決區域
 if st.session_state.current_battle and not st.session_state.game_over_triggered:
     battle = st.session_state.current_battle
     pkm_data = POKEMON_DATABASE[battle["pkm_id"]]
     
     st.subheader(f"⚔️ 戰鬥發生！ 遇到野生的【{pkm_data['name_zh']}】(LV.{battle['level']})")
-    st.caption(f"這隻寶可夢的屬性為：{pkm_data['types']}")
+    st.caption(f"這隻寶可夢的屬性為：{pkm_data['types']} | 🎯 當前單字範圍：第 {st.session_state.selected_word_group} 組")
     
     if battle["mode"] == "boss":
         st.error(f"🚨 警告：這是【{STAGES[battle['stage_id']]['name']}】的關主挑戰戰鬥！")
     else:
         st.info("🌲 自由探索中：正在尋找這片區域獨有的野生寶可夢...")
 
-    # 精靈球與提示功能
     st.session_state.current_battle["selected_ball"] = st.selectbox(
         "選擇要丟出的精靈球：", ["精靈球", "超級球", "高級球"]
     )
@@ -177,6 +214,7 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
     word_en = battle["word_en"]
     
     if chosen_ball == "超級球":
+        # 處理含數字後綴的提示切分
         hint = f"{word_en[0]} " + "_ " * (len(word_en) - 2) + f" {word_en[-1]}"
         st.write(f"💡 **超級球效果（提示首尾字）**： `{hint}` (長度：{len(word_en)} 字母)")
     elif chosen_ball == "高級球":
@@ -228,6 +266,25 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
 # 6. 主畫面：關卡地圖區域 (當處於非戰鬥狀態時顯示)
 # ==============================================================================
 elif not st.session_state.game_over_triggered:
+    # 🆕 新增：在主畫面最上方加入單字組別選擇器
+    st.header("📖 訓練單字庫設定")
+    
+    # 建立 1 到 40 組的選單選項
+    group_options = [f"第 {i} 組單字 (第 {50*(i-1)+1} ~ {50*i} 字)" for i in range(1, 41)]
+    
+    selected_group_str = st.selectbox(
+        "請選擇您現在想要背誦與進行戰鬥的單字範圍：",
+        options=group_options,
+        index=st.session_state.selected_word_group - 1
+    )
+    
+    # 解析選中的組別數字並更新至儲存狀態中
+    new_group_num = int(selected_group_str.split(" ")[1])
+    if new_group_num != st.session_state.selected_word_group:
+        st.session_state.selected_word_group = new_group_num
+        st.toast(f"🎯 已切換至第 {new_group_num} 組單字庫！")
+
+    st.markdown("---")
     st.header("🗺️ 火箭隊戰線地圖")
     st.write("請由上往下依序擊破。只要打贏關主，就能隨時點擊『回頭抓寶可夢』按鈕，自由捕捉該區所有池內的寶可夢並查看詳細屬性值！")
     
@@ -255,8 +312,6 @@ elif not st.session_state.game_over_triggered:
                     st.rerun()
             else:
                 if st.button("💥 挑戰關主", key=f"boss_{sid}"):
-                    start_battle(sid, mode="boss")
-                    st.rerun()
 
     if 13 in st.session_state.defeated_bosses:
         st.markdown("---")
