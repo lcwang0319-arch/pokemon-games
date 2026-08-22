@@ -433,4 +433,5 @@ elif not st.session_state.game_over_triggered:
 
     if 13 in st.session_state.defeated_bosses:
         st.markdown("---")
-        st.success("👑 恭喜完全通關！孩子已成功背完本週全部 50 個單字並擊敗板木老大！
+        st.success("👑 恭喜完全通關！孩子已成功背完本週全部 50 個單字並擊敗板木老大！下週請在上方下拉選單切換至下一週，繼續接受火箭隊的挑戰！")
+
