@@ -211,9 +211,9 @@ elif not st.session_state.game_over_triggered:
     st.header("🗺️ 火箭隊戰線地圖")
     st.write("請由上往下依序擊破。只要打贏關主，就能隨時點擊『回頭抓寶可夢』按鈕，自由捕捉該區所有池內的寶可夢並查看詳細屬性值！")
     
-    for sid, stage in STAGES.items():
-        col1, col2 = st.columns()
-        
+      for sid, stage in STAGES.items():
+        col1, col2 = st.columns()  # ❌ 舊的程式碼（少填了數量，會導致新版 Python 報錯）
+
         # 檢查前置關卡是否已解鎖
         is_locked = False
         if sid > 1 and (sid - 1) not in st.session_state.defeated_bosses:
