@@ -270,6 +270,7 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
     else:
         st.info("🌲 自由探索中：正在尋找這片區域獨有的野生寶可夢...")
 
+    # 精靈球與提示功能
     st.session_state.current_battle["selected_ball"] = st.selectbox(
         "選擇要丟出的精靈球：", ["精靈球", "超級球", "高級球"]
     )
@@ -278,14 +279,27 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
     word_en = battle["word_en"]
     
     if chosen_ball == "超級球":
-        hint = f"{word_en} " + "_ " * (len(word_en) - 2) + f" {word_en[-1]}"
-        st.write(f"💡 **超級球效果（提示首尾字）**： `{hint}` (長度：{len(word_en)} 字母)")
+        # ======================================================================
+        # ⚙️ 修正：超級球提示機制（僅顯示字首、字尾，中間全遮蔽）
+        # ======================================================================
+        if len(word_en) <= 2:
+            # 如果單字太短（例如只有 2 個字），就只給第一個字當提示
+            hint = word_en[0] + "_"
+        else:
+            # 正常單字：取出第一個字 + 中間全部變底線 + 最後一個字
+            hint = word_en[0] + " _ " * (len(word_en) - 2) + " " + word_en[-1]
+            
+        st.warning(f"💡 **超級球效果（僅提示字首與字尾）**： `{hint}`  (總字數：{len(word_en)} 字母)")
+        
     elif chosen_ball == "高級球":
-        st.write(f"💡 **高級球效果**： 提示字數！這個單字總共有 **{len(word_en)}** 個英文字母。")
+        # ======================================================================
+        # ⚙️ 高級球提示機制（僅提示單字長度）
+        # ======================================================================
+        st.info(f"💡 **高級球效果（字數提示）**： 這個英文單字總共有 **{len(word_en)}** 個英文字母。")
+        
     else:
-        st.write("💡 **普通精靈球**： 無額外提示，全憑記憶力拚搏！")
+        st.write("💡 **普通精靈球**： 無任何額外字形提示，全憑你的單字記憶力拚搏！")
 
-    st.write(f"### ❓ 請拼出單字： **【 {battle['word_zh']} 】**")
     
         # 🆕 新增：捕捉結果專用獨立對話框彈窗
     @st.dialog("🎯 捕捉結果報告")
