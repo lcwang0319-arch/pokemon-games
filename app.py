@@ -287,6 +287,19 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
 
     st.write(f"### ❓ 請拼出單字： **【 {battle['word_zh']} 】**")
     
+        # 🆕 新增：捕捉結果專用獨立對話框彈窗
+    @st.dialog("🎯 捕捉結果報告")
+    def show_result_dialog(status_type, title, message):
+        if status_type == "success":
+            st.success(title)
+            st.balloons() # 噴發氣球
+        elif status_type == "error":
+            st.error(title)
+        st.write(message)
+        if st.button("確認並重新出發", use_container_width=True):
+            st.rerun()
+
+    # 答題與捕捉表單
     with st.form(key="battle_form", clear_on_submit=True):
         player_answer = st.text_input("請在此輸入英文答案 (不分大小寫)：").strip().lower()
         submit_btn = st.form_submit_button("🔴 投擲精靈球！")
@@ -298,49 +311,42 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
                 st.session_state.inventory[chosen_ball] -= 1
                 
                 if player_answer == word_en.lower():
-                    # ==========================================================
-                    # 🎉 捕捉成功視窗通知
-                    # ==========================================================
-                    st.success(f"🎉 捕捉成功！您完美拼對了單字【{word_en}】！")
-                    st.balloons() # 噴發慶祝氣球
-                    
-                    # 更新圖鑑狀態
+                    # 🟢 更新圖鑑狀態
                     st.session_state.player_pokedex[battle["pkm_id"]] = "已收服"
                     
-                    # 判斷是首領戰還是野外探索，跳出額外獎勵視窗
+                    # 根據模式建立彈窗文字
                     if battle["mode"] == "boss":
                         st.session_state.defeated_bosses.add(battle["stage_id"])
-                        st.success(f"🏆 【擊敗火箭隊幹部】成功解放該區域！獲得首領戰補給：精靈球 +3、傷藥 +1！")
+                        title_text = "🏆 成功擊敗火箭隊幹部！"
+                        msg_text = f"恭喜！您完美拼對了單字【{word_en}】！順利解放該區域，並獲得戰利品：精靈球 +3、傷藥 +1！"
                         st.session_state.inventory["精靈球"] += 3
                         st.session_state.inventory["傷藥"] += 1
                     else:
-                        st.info(f"🎯 【圖鑑登錄】野生的【{pkm_data['name_zh']}】已被成功收服，左側屬性面板已解鎖！")
+                        title_text = f"🎉 成功收服 {pkm_data['name_zh']}！"
+                        msg_text = f"太棒了！您正確拼出單字【{word_en}】！【{pkm_data['name_zh']}】已被收服，左側屬性面板圖鑑已正式解鎖！"
                     
-                    # 清空戰鬥狀態，強制網頁重新整理刷新
+                    # 戰鬥結束，呼叫獨立中央彈窗
                     st.session_state.current_battle = None
-                    st.rerun()
+                    show_result_dialog("success", title_text, msg_text)
+                    
                 else:
-                    # ==========================================================
-                    # ❌ 捕捉失敗 / 寶可夢反擊與逃跑視窗通知
-                    # ==========================================================
                     damage = int(battle["level"] * 0.5)
                     st.session_state.player_hp -= damage
                     
-                    # 💀 情況 A：玩家體力不支眼前一片漆黑
+                    # 💀 玩家體力不支
                     if st.session_state.player_hp <= 0:
                         st.session_state.player_hp = 30
                         st.session_state.inventory["精靈球"] = max(0, st.session_state.inventory["精靈球"] - 2)
-                        st.session_state.game_over_triggered = True # 觸發大螢幕死亡重置彈窗
+                        st.session_state.game_over_triggered = True
                         st.session_state.current_battle = None
                         st.rerun()
-                    # 🏃 情況 B：玩家受傷，且寶可夢逃跑了
+                    # 🏃 捕捉失敗，寶可夢逃跑
                     else:
-                        st.error(f"❌ 捕捉失敗！正確答案其實是【{word_en}】。")
-                        st.error(f"💥 【{pkm_data['name_zh']}】發動了反擊！您受到了 {damage} 點傷害。")
-                        st.warning(f"💨 野生的【{pkm_data['name_zh']}】趁亂逃跑了！請重新進入地圖區域尋找。")
+                        title_text = f"❌ {pkm_data['name_zh']} 逃跑了！"
+                        msg_text = f"很遺憾，拼錯了！正確答案其實是【{word_en}】。\n\n寶可夢在逃跑前發動反擊，您受到了 {damage} 點傷害！請重新進入區域尋找牠。"
                         
                         st.session_state.current_battle = None
-                        st.rerun()
+                        show_result_dialog("error", title_text, msg_text)
 
 # ==============================================================================
 # 6. 主畫面：關卡地圖區域 (當處於非戰鬥狀態時顯示)
@@ -355,7 +361,7 @@ elif not st.session_state.game_over_triggered:
         index=st.session_state.selected_word_group - 1
     )
     
-    # 修正字串切分邏輯，精確解析出第幾組的數字數字
+    # 修正字串切分與轉換
     new_group_num = int(selected_group_str.split(" ")[1])
     if new_group_num != st.session_state.selected_word_group:
         st.session_state.selected_word_group = new_group_num
@@ -395,4 +401,3 @@ elif not st.session_state.game_over_triggered:
     if 13 in st.session_state.defeated_bosses:
         st.markdown("---")
         st.success("👑 恭喜完全通關！您已擊敗終極 Boss 板木老大，解救了暗黑超夢！現在可以繼續回頭自由捕捉，補完您左側側邊欄的完整圖鑑與屬性數值！")
-     
