@@ -104,7 +104,7 @@ POKEMON_DATABASE = {
     "0228": {"name_zh": "戴魯比", "name_en": "Houndour", "types": "惡/火", "hp": 45, "atk": 60, "def": 30, "sp_atk": 80, "sp_def": 50, "spd": 65},
     "0229": {"name_zh": "黑魯加", "name_en": "Houndoom", "types": "惡/火", "hp": 75, "atk": 90, "def": 50, "sp_atk": 110, "sp_def": 80, "spd": 95},
     "0246": {"name_zh": "由基拉", "name_en": "Larvitar", "types": "岩石/地面", "hp": 50, "atk": 64, "def": 50, "sp_atk": 45, "sp_def": 50, "spd": 41},
-    "0248": {"name_zh": "班基拉斯", "name_en": "Tyranitar", "types": "岩石/惡", "hp": 100, "atk": 134, "def": 110, "sp_atk": 95, "sp_def": 100, "spd": 61},
+    "0248": {"name_zh": "班基拉斯", "name_en": "Tyranitar", "types": "岩石/惡", "hp": 100, "atk": 134, "def": 110, "sp_atk": 95, "def": 100, "spd": 61},
     "0252": {"name_zh": "木守宮", "name_en": "Treecko", "types": "草", "hp": 40, "atk": 45, "def": 35, "sp_atk": 65, "sp_def": 55, "spd": 70},
     "0254": {"name_zh": "蜥蜴王", "name_en": "Sceptile", "types": "草", "hp": 70, "atk": 85, "def": 65, "sp_atk": 105, "sp_def": 85, "spd": 120},
     "0255": {"name_zh": "火稚雞", "name_en": "Torchic", "types": "火", "hp": 45, "atk": 60, "def": 40, "sp_atk": 70, "sp_def": 50, "spd": 45},
@@ -257,7 +257,7 @@ with st.sidebar:
         else:
             st.write(f"⚪ **#{pid} ？？？** (未發現)")
 
-# 主畫面：戰鬥與對決區域
+# 主畫面戰鬥介面
 if st.session_state.current_battle and not st.session_state.game_over_triggered:
     battle = st.session_state.current_battle
     pkm_data = POKEMON_DATABASE[battle["pkm_id"]]
@@ -270,7 +270,6 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
     else:
         st.info("🌲 自由探索中：正在尋找這片區域獨有的野生寶可夢...")
 
-    # 精靈球與提示功能
     st.session_state.current_battle["selected_ball"] = st.selectbox(
         "選擇要丟出的精靈球：", ["精靈球", "超級球", "高級球"]
     )
@@ -278,35 +277,26 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
     chosen_ball = st.session_state.current_battle["selected_ball"]
     word_en = battle["word_en"]
     
+    # 精靈球遮蔽提示機制
     if chosen_ball == "超級球":
-        # ======================================================================
-        # ⚙️ 修正：超級球提示機制（僅顯示字首、字尾，中間全遮蔽）
-        # ======================================================================
         if len(word_en) <= 2:
-            # 如果單字太短（例如只有 2 個字），就只給第一個字當提示
-            hint = word_en[0] + "_"
+            hint = word_en + "_"
         else:
-            # 正常單字：取出第一個字 + 中間全部變底線 + 最後一個字
             hint = word_en[0] + " _ " * (len(word_en) - 2) + " " + word_en[-1]
-            
         st.warning(f"💡 **超級球效果（僅提示字首與字尾）**： `{hint}`  (總字數：{len(word_en)} 字母)")
-        
     elif chosen_ball == "高級球":
-        # ======================================================================
-        # ⚙️ 高級球提示機制（僅提示單字長度）
-        # ======================================================================
         st.info(f"💡 **高級球效果（字數提示）**： 這個英文單字總共有 **{len(word_en)}** 個英文字母。")
-        
     else:
         st.write("💡 **普通精靈球**： 無任何額外字形提示，全憑你的單字記憶力拚搏！")
 
+    st.write(f"### ❓ 請拼出單字： **【 {battle['word_zh']} 】**")
     
-        # 🆕 新增：捕捉結果專用獨立對話框彈窗
+    # 捕捉結果專用獨立對話框彈窗
     @st.dialog("🎯 捕捉結果報告")
     def show_result_dialog(status_type, title, message):
         if status_type == "success":
             st.success(title)
-            st.balloons() # 噴發氣球
+            st.balloons()
         elif status_type == "error":
             st.error(title)
         st.write(message)
@@ -325,10 +315,8 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
                 st.session_state.inventory[chosen_ball] -= 1
                 
                 if player_answer == word_en.lower():
-                    # 🟢 更新圖鑑狀態
                     st.session_state.player_pokedex[battle["pkm_id"]] = "已收服"
                     
-                    # 根據模式建立彈窗文字
                     if battle["mode"] == "boss":
                         st.session_state.defeated_bosses.add(battle["stage_id"])
                         title_text = "🏆 成功擊敗火箭隊幹部！"
@@ -339,7 +327,6 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
                         title_text = f"🎉 成功收服 {pkm_data['name_zh']}！"
                         msg_text = f"太棒了！您正確拼出單字【{word_en}】！【{pkm_data['name_zh']}】已被收服，左側屬性面板圖鑑已正式解鎖！"
                     
-                    # 戰鬥結束，呼叫獨立中央彈窗
                     st.session_state.current_battle = None
                     show_result_dialog("success", title_text, msg_text)
                     
@@ -347,14 +334,12 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
                     damage = int(battle["level"] * 0.5)
                     st.session_state.player_hp -= damage
                     
-                    # 💀 玩家體力不支
                     if st.session_state.player_hp <= 0:
                         st.session_state.player_hp = 30
                         st.session_state.inventory["精靈球"] = max(0, st.session_state.inventory["精靈球"] - 2)
                         st.session_state.game_over_triggered = True
                         st.session_state.current_battle = None
                         st.rerun()
-                    # 🏃 捕捉失敗，寶可夢逃跑
                     else:
                         title_text = f"❌ {pkm_data['name_zh']} 逃跑了！"
                         msg_text = f"很遺憾，拼錯了！正確答案其實是【{word_en}】。\n\n寶可夢在逃跑前發動反擊，您受到了 {damage} 點傷害！請重新進入區域尋找牠。"
@@ -362,9 +347,7 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
                         st.session_state.current_battle = None
                         show_result_dialog("error", title_text, msg_text)
 
-# ==============================================================================
-# 6. 主畫面：關卡地圖區域 (當處於非戰鬥狀態時顯示)
-# ==============================================================================
+# 主畫面地圖介面
 elif not st.session_state.game_over_triggered:
     st.header("📖 訓練單字庫設定")
     group_options = [f"第 {i} 組單字 (第 {50*(i-1)+1} ~ {50*i} 字)" for i in range(1, 41)]
@@ -375,7 +358,6 @@ elif not st.session_state.game_over_triggered:
         index=st.session_state.selected_word_group - 1
     )
     
-    # 修正字串切分與轉換
     new_group_num = int(selected_group_str.split(" ")[1])
     if new_group_num != st.session_state.selected_word_group:
         st.session_state.selected_word_group = new_group_num
