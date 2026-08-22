@@ -121,25 +121,25 @@ POKEMON_DATABASE = {
 
 # 100 隻不重複的 13 關配置名單
 STAGES = {
-    1: {"name": "第 1 關：枯葉市分部 (小隊長 蘭斯)", "level": 18, "boss_pkm": "0042", "pool": ["0010", "0013", "0016"]}, 
-    2: {"name": "第 2 關：月見山礦區 (小隊長 蕾拉)", "level": 26, "boss_pkm": "0095", "pool": ["0019", "0027", "0074"]}, 
-    3: {"name": "第 3 關：彩虹市機房 (小隊長 查克)", "level": 30, "boss_pkm": "0082", "pool": ["0025", "0052", "0081"]}, 
-    4: {"name": "第 4 關：紫苑鎮幽靈塔 (小隊長 格拉吉歐)", "level": 44, "boss_pkm": "0094", "pool": ["0041", "0092", "0093"]}, 
-    5: {"name": "第 5 關：淺紅市工廠 (小隊長 阿波羅)", "level": 48, "boss_pkm": "0110", "pool": ["0012", "0015", "0109"]}, 
-    6: {"name": "第 6 關：紅蓮島地底 (小隊長 雅典娜)", "level": 50, "boss_pkm": "0038", "pool": ["0004", "0037", "0058"]}, 
-    7: {"name": "第 7 關：雙子島秘境 (小隊長 拉姆達)", "level": 56, "boss_pkm": "0091", "pool": ["0007", "0054", "0090"]}, 
-    8: {"name": "第 8 關：常青市要塞 (小隊長 蘭姆達)", "level": 58, "boss_pkm": "0068", "pool": ["0001", "0056", "0066"]}, 
-    9: {"name": "四天王第一戰：大隊長 阿波羅", "level": 64, "boss_pkm": "0024", "pool": ["0002", "0023", "0045"]}, 
-    10: {"name": "四天王第二戰：大隊長 雅典娜", "level": 65, "boss_pkm": "0229", "pool": ["0005", "0136", "0228"]}, 
-    11: {"name": "四天王第三戰：大隊長 蘭斯", "level": 67, "boss_pkm": "0306", "pool": ["0008", "0111", "0304"]}, 
-    12: {"name": "四天王第四戰：大隊長 拉姆達", "level": 70, "boss_pkm": "0248", "pool": ["0020", "0133", "0246"]}, 
+    1: {"name": "第 1 關：枯葉市分部 (小隊長 蘭斯)", "level": 18, "boss_pkm": "0042", "pool": ["0010", "0013", "0016"], "word_count": 3}, 
+    2: {"name": "第 2 關：月見山礦區 (小隊長 蕾拉)", "level": 26, "boss_pkm": "0095", "pool": ["0019", "0027", "0074"], "word_count": 3}, 
+    3: {"name": "第 3 關：彩虹市機房 (小隊長 查克)", "level": 30, "boss_pkm": "0082", "pool": ["0025", "0052", "0081"], "word_count": 3}, 
+    4: {"name": "第 4 關：紫苑鎮幽靈塔 (小隊長 格拉吉歐)", "level": 44, "boss_pkm": "0094", "pool": ["0041", "0092", "0093"], "word_count": 3}, 
+    5: {"name": "第 5 關：淺紅市工廠 (小隊長 阿波羅)", "level": 48, "boss_pkm": "0110", "pool": ["0012", "0015", "0109"], "word_count": 3}, 
+    6: {"name": "第 6 關：紅蓮島地底 (小隊長 雅典娜)", "level": 50, "boss_pkm": "0038", "pool": ["0004", "0037", "0058"], "word_count": 3}, 
+    7: {"name": "第 7 關：雙子島秘境 (小隊長 拉姆達)", "level": 56, "boss_pkm": "0091", "pool": ["0007", "0054", "0090"], "word_count": 3}, 
+    8: {"name": "第 8 關：常青市要塞 (小隊長 蘭姆達)", "level": 58, "boss_pkm": "0068", "pool": ["0001", "0056", "0066"], "word_count": 3}, 
+    9: {"name": "四天王第一戰：大隊長 阿波羅", "level": 64, "boss_pkm": "0024", "pool": ["0002", "0023", "0045"], "word_count": 5}, 
+    10: {"name": "四天王第二戰：大隊長 雅典娜", "level": 65, "boss_pkm": "0229", "pool": ["0005", "0136", "0228"], "word_count": 5}, 
+    11: {"name": "四天王第三戰：大隊長 蘭斯", "level": 67, "boss_pkm": "0306", "pool": ["0008", "0111", "0304"], "word_count": 5}, 
+    12: {"name": "四天王第四戰：大隊長 拉姆達", "level": 70, "boss_pkm": "0248", "pool": ["0020", "0133", "0246"], "word_count": 5}, 
     13: {"name": "最終決戰：火箭隊最高總帥 (板木老大)", "level": 72, "boss_pkm": "0150", "pool": [
         "0003", "0006", "0009", "0018", "0026", "0028", "0036", "0053", "0055", "0059",
         "0062", "0065", "0075", "0076", "0077", "0079", "0083", "0102", "0104", "0106",
         "0107", "0112", "0113", "0123", "0125", "0130", "0131", "0134", "0135", "0138",
         "0142", "0143", "0147", "0148", "0149", "0196", "0197", "0212", "0214", "0252",
         "0254", "0255", "0257", "0258", "0260", "0280", "0282", "0373", "0448"
-    ]},
+    ], "word_count": 6},
 }
 
 # ==============================================================================
@@ -159,7 +159,7 @@ if "initialized" not in st.session_state:
         st.session_state.player_pokedex[pid] = "未發現"
 
 # ==============================================================================
-# 3. 2000 個單字庫精確分組邏輯 (每組 50 個，共 40 組)
+# 3. 🆕 完美串接：2000 個單字庫自動分組邏輯 (一組 50 字，依 3/3/3.../5/5/5/5/6 精確切分各關卡題目)
 # ==============================================================================
 @st.cache_data
 def generate_mega_word_bank():
@@ -182,7 +182,16 @@ def generate_mega_word_bank():
                 "zh": f"{seed['zh']}-{word_id}"
             })
             word_id += 1
-        mega_bank[group_num] = group_list
+            
+        # 📌 核心切分：將這 50 個單字包依 3,3,3,3,3,3,3,3, 5,5,5,5, 6 拆分指派給 13 個關卡
+        stage_assignments = {}
+        current_index = 0
+        for sid, s_info in STAGES.items():
+            count = s_info["word_count"]
+            stage_assignments[sid] = group_list[current_index:current_index + count]
+            current_index += count
+            
+        mega_bank[group_num] = stage_assignments
     return mega_bank
 
 MEGA_WORD_BANK = generate_mega_word_bank()
@@ -190,11 +199,31 @@ MEGA_WORD_BANK = generate_mega_word_bank()
 # ==============================================================================
 # 4. 遊戲核心邏輯函式
 # ==============================================================================
-def start_battle(stage_id, mode="boss"):
+# 4. 遊戲核心邏輯函式
+# ==============================================================================
+def get_stage_words(stage_id):
+    """根據玩家選的週數組別，將 50 個字依比例 (3*8 + 5*4 + 6 = 50) 精準切分給 13 個關卡"""
     current_group_words = MEGA_WORD_BANK[st.session_state.selected_word_group]
-    word = random.choice(current_group_words)
-    stage_info = STAGES[stage_id]
     
+    slices = {
+        1: (0, 3),   2: (3, 6),   3: (6, 9),   4: (9, 12),
+        5: (12, 15), 6: (15, 18), 7: (18, 21), 8: (21, 24), # 前 8 關各 3 個字 (共 24 字)
+        9: (24, 29), 10: (29, 34), 11: (34, 39), 12: (39, 44), # 四天王各 5 個字 (共 20 字)
+        13: (44, 50) # 板木老大 6 個字 (總共剛好 50 字)
+    }
+    start, end = slices[stage_id]
+    return current_group_words[start:end]
+
+def start_battle(stage_id, mode="boss"):
+    stage_words = get_stage_words(stage_id)
+    
+    # 關主戰依進度出題，自由探索則從該關指派的單字中隨機抽題
+    if mode == "boss":
+        word = stage_words[st.session_state.boss_battle_progress]
+    else:
+        word = random.choice(stage_words)
+        
+    stage_info = STAGES[stage_id]
     pkm_id = stage_info["boss_pkm"] if mode == "boss" else random.choice(stage_info["pool"])
     
     if st.session_state.player_pokedex[pkm_id] == "未發現":
@@ -214,16 +243,14 @@ def start_battle(stage_id, mode="boss"):
 # 5. 前端介面佈局 (Streamlit UI)
 # ==============================================================================
 st.title("🎒 寶可夢單字冒險：火箭隊的反擊")
-st.caption("本程式採用單一檔案設計，內嵌 100 隻完整不重複寶可夢，完美支援 GitHub 直接部署。")
+st.caption("內嵌 100 隻不重複寶可夢。每週 50 單字已依比例 (前八關各3題、天王各5題、板木6題) 精確分發！")
 
-# 顯示死亡重回中心的訊息提示
 if st.session_state.game_over_triggered:
     st.error("💀 您體力不支眼前一片漆黑... 被送回醫療中心。火箭隊趁機偷走了 2 顆精靈球。")
     if st.button("確認並重新出發"):
         st.session_state.game_over_triggered = False
         st.rerun()
 
-# 側邊欄：狀態、背包與屬性圖鑑
 with st.sidebar:
     st.header("👤 訓練家狀態")
     st.metric(label="❤️ 玩家血量 (HP)", value=f"{st.session_state.player_hp} / 100")
@@ -261,14 +288,15 @@ with st.sidebar:
 if st.session_state.current_battle and not st.session_state.game_over_triggered:
     battle = st.session_state.current_battle
     pkm_data = POKEMON_DATABASE[battle["pkm_id"]]
+    stage_info = STAGES[battle["stage_id"]]
     
     st.subheader(f"⚔️ 戰鬥發生！ 遇到野生的【{pkm_data['name_zh']}】(LV.{battle['level']})")
-    st.caption(f"這隻寶可夢的屬性為：{pkm_data['types']} | 🎯 當前單字範圍：第 {st.session_state.selected_word_group} 組")
     
     if battle["mode"] == "boss":
-        st.error(f"🚨 警告：這是【{STAGES[battle['stage_id']]['name']}】的關主挑戰戰鬥！")
+        st.error(f"🚨 警告：這是【{stage_info['name']}】的關鍵首領戰！")
+        st.info(f"📊 關主挑戰進度：第 {st.session_state.boss_battle_progress + 1} 題 / 共 {stage_info['word_count']} 題")
     else:
-        st.info("🌲 自由探索中：正在尋找這片區域獨有的野生寶可夢...")
+        st.info("🌲 自由探索中：正在尋找這片區域對應分配到的野生寶可夢單字...")
 
     st.session_state.current_battle["selected_ball"] = st.selectbox(
         "選擇要丟出的精靈球：", ["精靈球", "超級球", "高級球"]
@@ -277,7 +305,7 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
     chosen_ball = st.session_state.current_battle["selected_ball"]
     word_en = battle["word_en"]
     
-    # 精靈球遮蔽提示機制
+    # 完美遮蔽提示機制
     if chosen_ball == "超級球":
         if len(word_en) <= 2:
             hint = word_en + "_"
@@ -291,8 +319,8 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
 
     st.write(f"### ❓ 請拼出單字： **【 {battle['word_zh']} 】**")
     
-    # 捕捉結果專用獨立對話框彈窗
-    @st.dialog("🎯 捕捉結果報告")
+    # 🆕 捕捉結果專用獨立中央對話框彈窗 (解決畫面刷新過快看不到提示的問題)
+    @st.dialog("🎯 戰鬥結果報告")
     def show_result_dialog(status_type, title, message):
         if status_type == "success":
             st.success(title)
@@ -315,14 +343,20 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
                 st.session_state.inventory[chosen_ball] -= 1
                 
                 if player_answer == word_en.lower():
-                    st.session_state.player_pokedex[battle["pkm_id"]] = "已收服"
+                    st.session_state.player_pokedex[battle["pkm_id"]] = "Macro收服" if "Macro" in word_en else "已收服"
                     
                     if battle["mode"] == "boss":
-                        st.session_state.defeated_bosses.add(battle["stage_id"])
-                        title_text = "🏆 成功擊敗火箭隊幹部！"
-                        msg_text = f"恭喜！您完美拼對了單字【{word_en}】！順利解放該區域，並獲得戰利品：精靈球 +3、傷藥 +1！"
-                        st.session_state.inventory["精靈球"] += 3
-                        st.session_state.inventory["傷藥"] += 1
+                        st.session_state.boss_battle_progress += 1
+                        
+                        # 檢查該關卡指定題數是否全部答對
+                        if st.session_state.boss_battle_progress >= stage_info["word_count"]:
+                            st.session_state.defeated_bosses.add(battle["stage_id"])
+                            st.session_state.boss_battle_progress = 0 # 重置進度
+                            title_text = "🏆 成功擊敗火箭隊幹部！"
+                            msg_text = f"太強了！您連續答對並背完了本關所有 {stage_info['word_count']} 個單字！該區域已完全解放，獲得戰利品：精靈球 +3、傷藥 +1！"
+                        else:
+                            title_text = f"🎯 正確！第 {st.session_state.boss_battle_progress} 題通過"
+                            msg_text = f"成功收服了【{pkm_data['name_zh']}】！距離擊敗關主還剩下 {stage_info['word_count'] - st.session_state.boss_battle_progress} 題，繼續加油！"
                     else:
                         title_text = f"🎉 成功收服 {pkm_data['name_zh']}！"
                         msg_text = f"太棒了！您正確拼出單字【{word_en}】！【{pkm_data['name_zh']}】已被收服，左側屬性面板圖鑑已正式解鎖！"
@@ -333,6 +367,7 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
                 else:
                     damage = int(battle["level"] * 0.5)
                     st.session_state.player_hp -= damage
+                    st.session_state.boss_battle_progress = 0 # 關主戰只要錯一題，連擊進度就重來
                     
                     if st.session_state.player_hp <= 0:
                         st.session_state.player_hp = 30
@@ -342,30 +377,32 @@ if st.session_state.current_battle and not st.session_state.game_over_triggered:
                         st.rerun()
                     else:
                         title_text = f"❌ {pkm_data['name_zh']} 逃跑了！"
-                        msg_text = f"很遺憾，拼錯了！正確答案其實是【{word_en}】。\n\n寶可夢在逃跑前發動反擊，您受到了 {damage} 點傷害！請重新進入區域尋找牠。"
+                        msg_text = f"很遺憾，拼錯了！正確答案其實是【{word_en}】。\n\n關主發動猛烈反擊，您受到了 {damage} 點傷害！挑戰進度已歸零，必須重新挑戰關主。"
                         
                         st.session_state.current_battle = None
                         show_result_dialog("error", title_text, msg_text)
 
 # 主畫面地圖介面
 elif not st.session_state.game_over_triggered:
-    st.header("📖 訓練單字庫設定")
-    group_options = [f"第 {i} 組單字 (第 {50*(i-1)+1} ~ {50*i} 字)" for i in range(1, 41)]
+    st.header("📖 本週單字範圍設定")
+    group_options = [f"第 {i} 週單字 (每週精選 50 字特訓)" for i in range(1, 41)]
     
     selected_group_str = st.selectbox(
-        "請選擇您現在想要背誦與進行戰鬥的單字範圍：",
+        "請選擇孩子本週需要複習與挑戰的單字範圍：",
         options=group_options,
         index=st.session_state.selected_word_group - 1
     )
     
+    # 依空白精確切分出數字組別
     new_group_num = int(selected_group_str.split(" ")[1])
     if new_group_num != st.session_state.selected_word_group:
         st.session_state.selected_word_group = new_group_num
-        st.toast(f"🎯 已切換至第 {new_group_num} 組單字庫！")
+        st.session_state.boss_battle_progress = 0 
+        st.toast(f"🎯 已成功切換至第 {new_group_num} 週題庫！")
 
     st.markdown("---")
     st.header("🗺️ 火箭隊戰線地圖")
-    st.write("請由上往下依序擊破。只要打贏關主，就能隨時點擊『回頭抓寶可夢』按鈕，自由捕捉該區所有池內的寶可夢並查看詳細屬性值！")
+    st.write("點擊『挑戰關主』會依序考完該關規定的單字量，中途出錯會重來。打贏後可點擊『回頭抓寶可夢』進行該關單字範圍的隨機複習！")
     
     for sid, stage in STAGES.items():
         col1, col2 = st.columns(2)
@@ -376,11 +413,11 @@ elif not st.session_state.game_over_triggered:
             
         with col1:
             if is_locked:
-                st.write(f"🔒 **{stage['name']}** (LV.{stage['level']})")
+                st.write(f"🔒 **{stage['name']}** (🔒 需考完前一關)")
             elif sid in st.session_state.defeated_bosses:
-                st.write(f"✅ **{stage['name']}** (LV.{stage['level']}) - `區域已解放`")
+                st.write(f"✅ **{stage['name']}** (✨ 本關 {stage['word_count']} 字已完全搞定)")
             else:
-                st.write(f"⚔️ **{stage['name']}** (LV.{stage['level']}) - `小隊長在線`")
+                st.write(f"⚔️ **{stage['name']}** (🎯 本關需連續答對 **{stage['word_count']}** 題)")
                 
         with col2:
             if is_locked:
@@ -390,10 +427,10 @@ elif not st.session_state.game_over_triggered:
                     start_battle(sid, mode="explore")
                     st.rerun()
             else:
-                if st.button("💥 挑戰關主", key=f"boss_{sid}"):
+                if st.button(f"💥 挑戰關主 ({stage['word_count']}題)", key=f"boss_{sid}"):
                     start_battle(sid, mode="boss")
                     st.rerun()
 
     if 13 in st.session_state.defeated_bosses:
         st.markdown("---")
-        st.success("👑 恭喜完全通關！您已擊敗終極 Boss 板木老大，解救了暗黑超夢！現在可以繼續回頭自由捕捉，補完您左側側邊欄的完整圖鑑與屬性數值！")
+        st.success("👑 恭喜完全通關！孩子已成功背完本週全部 50 個單字並擊敗板木老大！
