@@ -223,6 +223,8 @@ def generate_mega_word_bank():
         mega_bank[group_num] = stage_assignments
     return mega_bank
 
+MEGA_WORD_BANK = generate_mega_word_bank()  # ✅ 補上這行，啟動並生成全局單字庫！
+
 
 
 # ==============================================================================
