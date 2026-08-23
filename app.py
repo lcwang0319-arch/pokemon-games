@@ -159,11 +159,13 @@ if "initialized" not in st.session_state:
         st.session_state.player_pokedex[pid] = "未發現"
 
 # ==============================================================================
-# 3. 🆕 完美串接：2000 個單字庫自動分組邏輯 (一組 50 字，依 3/3/3.../5/5/5/5/6 精確切分各關卡題目)
+# 3. 2000 個單字庫精確分組邏輯 (每組 50 個，共 40 組)
 # ==============================================================================
 @st.cache_data
 def generate_mega_word_bank():
     mega_bank = {}
+    
+    # 基礎種子單字（用於 1~12 組、14~40 組自動延伸填滿）
     base_words = [
         {"en": "apple", "zh": "蘋果"}, {"en": "banana", "zh": "香蕉"}, {"en": "cat", "zh": "貓"},
         {"en": "dog", "zh": "狗"}, {"en": "elephant", "zh": "大象"}, {"en": "forest", "zh": "森林"},
@@ -172,18 +174,45 @@ def generate_mega_word_bank():
         {"en": "strategy", "zh": "策略"}, {"en": "challenge", "zh": "挑戰"}, {"en": "victory", "zh": "勝利"}
     ]
     
+    # 🆕 您提供的第 13 組（第 13 週） 50 個真實精確單字庫
+    real_group_13_words = [
+        {"en": "extra", "zh": "額外的"}, {"en": "eye", "zh": "眼"}, {"en": "face", "zh": "臉"}, 
+        {"en": "fact", "zh": "事實"}, {"en": "factory", "zh": "工廠"}, {"en": "fail", "zh": "失敗"},
+        {"en": "fair", "zh": "公平"}, {"en": "fall", "zh": "秋天"}, {"en": "false", "zh": "假的"}, 
+        {"en": "family", "zh": "家庭"}, {"en": "famous", "zh": "出名"}, {"en": "fan", "zh": "電扇"},
+        {"en": "fancy", "zh": "華麗"}, {"en": "fantastic", "zh": "好極了"}, {"en": "far", "zh": "遠的"}, 
+        {"en": "farm", "zh": "農場"}, {"en": "farmer", "zh": "農夫"}, {"en": "fashionable", "zh": "流行的"}, 
+        {"en": "fast", "zh": "很快地"}, {"en": "fat", "zh": "胖的"}, {"en": "father", "zh": "爸爸"}, 
+        {"en": "faucet", "zh": "水龍頭"}, {"en": "fault", "zh": "錯誤"}, {"en": "favorite", "zh": "最喜愛的"}, 
+        {"en": "fear", "zh": "恐懼"}, {"en": "february", "zh": "二月"}, {"en": "fee", "zh": "費用"}, 
+        {"en": "feed", "zh": "餵食"}, {"en": "feel", "zh": "感覺到..."}, {"en": "feeling", "zh": "感受"}, 
+        {"en": "female", "zh": "女性"}, {"en": "fence", "zh": "籬笆"}, {"en": "festival", "zh": "節慶"}, 
+        {"en": "fever", "zh": "發燒"}, {"en": "few", "zh": "些許"}, {"en": "fifteen", "zh": "十五"}, 
+        {"en": "fifty", "zh": "五十"}, {"en": "fight", "zh": "打鬥"}, {"en": "fill", "zh": "充滿"}, 
+        {"en": "film", "zh": "底片"}, {"en": "final", "zh": "最後的"}, {"en": "finally", "zh": "終於"}, 
+        {"en": "find", "zh": "找尋"}, {"en": "fine", "zh": "美好的"}, {"en": "finger", "zh": "手指"}, 
+        {"en": "finish", "zh": "完成"}, {"en": "fire", "zh": "火"}, {"en": "first", "zh": "第一"}, 
+        {"en": "fish", "zh": "魚"}, {"en": "fisherman", "zh": "漁夫"}
+    ]
+    
     word_id = 1
     for group_num in range(1, 41):
         group_list = []
-        for word_index in range(1, 51):
-            seed = base_words[(word_id - 1) % len(base_words)]
-            group_list.append({
-                "en": f"{seed['en']}-{word_id}",
-                "zh": f"{seed['zh']}-{word_id}"
-            })
-            word_id += 1
+        
+        # 📌 關鍵判定：如果是第 13 組，直接使用真實單字庫
+        if group_num == 13:
+            group_list = real_group_13_words
+        else:
+            # 其他組別使用種子單字自動後綴延伸填滿 50 字
+            for word_index in range(1, 51):
+                seed = base_words[(word_id - 1) % len(base_words)]
+                group_list.append({
+                    "en": f"{seed['en']}-{word_id}",
+                    "zh": f"{seed['zh']}-{word_id}"
+                })
+                word_id += 1
             
-        # 📌 核心切分：將這 50 個單字包依 3,3,3,3,3,3,3,3, 5,5,5,5, 6 拆分指派給 13 個關卡
+        # 將這 50 個單字包依 3,3,3,3,3,3,3,3, 5,5,5,5, 6 拆分指派給 13 個關卡
         stage_assignments = {}
         current_index = 0
         for sid, s_info in STAGES.items():
@@ -194,10 +223,8 @@ def generate_mega_word_bank():
         mega_bank[group_num] = stage_assignments
     return mega_bank
 
-MEGA_WORD_BANK = generate_mega_word_bank()
 
-# ==============================================================================
-# 4. 遊戲核心邏輯函式
+
 # ==============================================================================
 # 4. 遊戲核心邏輯函式
 # ==============================================================================
