@@ -242,9 +242,12 @@ def get_stage_words(stage_id):
     }
     start, end = slices[stage_id]
     return current_group_words[start:end]
-
+# ==============================================================================
+# 4. ✅ 修正版：遊戲核心邏輯與關卡單字提取函式
+# ==============================================================================
 def start_battle(stage_id, mode="boss"):
-    stage_words = get_stage_words(stage_id)
+    # 直接從已經依關卡 sid 分類好的單字庫中取出該關專屬的單字池
+    stage_words = MEGA_WORD_BANK[st.session_state.selected_word_group][stage_id]
     
     # 關主戰依進度出題，自由探索則從該關指派的單字中隨機抽題
     if mode == "boss":
@@ -267,6 +270,7 @@ def start_battle(stage_id, mode="boss"):
         "word_zh": word["zh"],
         "selected_ball": "精靈球"
     }
+
 
 # ==============================================================================
 # 5. 前端介面佈局 (Streamlit UI)
